@@ -104,6 +104,7 @@ def logout():
 
 # Updated clean startup
 if __name__ == '__main__':
+    print("HELLO")
     print("\n🚀 SignVani - ISL Learning Website Started Successfully!")
     print("🌐 Open this link in your browser:")
     print("   http://127.0.0.1:5000")
