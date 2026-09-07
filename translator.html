@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISL Live Translator - Learning Sign</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .sign-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+        .sign-letter {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            text-align: center;
+            width: 120px;
+        }
+        .sign-letter img {
+            height: 110px;
+            object-fit: contain;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+        }
+        .letter-label {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4f46e5;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <nav class="bg-indigo-600 text-white p-6 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <span class="text-4xl">👐</span>
+            <h1 class="text-3xl font-bold">Learning Website for Deaf,Mute and Sign Language</h1>
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="/home" class="hover:underline">← Back to Home</a>
+            <a href="/logout" class="bg-white/20 px-6 py-3 rounded-3xl">Logout</a>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <h1 class="text-5xl font-bold text-center mb-12">ISL Live Translator</h1>
+
+        <div class="max-w-3xl mx-auto">
+            <!-- Text to Sign Section Only -->
+            <div class="bg-white rounded-3xl p-12 shadow-xl">
+                <h3 class="text-4xl font-semibold mb-8 text-center">Text → Sign Language</h3>
+                
+                <input id="text-input" type="text" placeholder="Type HELLO" 
+                       class="w-full p-6 text-2xl border-2 border-slate-200 rounded-3xl focus:border-indigo-500 outline-none mb-8 uppercase">
+
+                <div class="flex gap-4">
+                    <button onclick="translateTextToSign()" 
+                            class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-6 rounded-3xl text-xl font-semibold">
+                        Show ISL Signs
+                    </button>
+                    <button onclick="speakInput()" 
+                            class="flex-1 bg-green-600 hover:bg-green-700 text-white py-6 rounded-3xl text-xl font-semibold flex items-center justify-center gap-2">
+                        <i class="fas fa-volume-up"></i> Speak Text
+                    </button>
+                </div>
+
+                <div id="text-result" class="mt-12 min-h-[380px] bg-slate-50 rounded-3xl p-10 hidden">
+                    <h4 class="text-2xl font-medium mb-8 text-slate-700 text-center">Your Text in Sign Language:</h4>
+                    <div id="sign-container" class="sign-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function translateTextToSign() {
+            const input = document.getElementById("text-input").value.trim().toUpperCase();
+            const container = document.getElementById("sign-container");
+            const resultDiv = document.getElementById("text-result");
+
+            if (!input) {
+                alert("Please type something to translate!");
+                return;
+            }
+
+            container.innerHTML = "";
+            resultDiv.classList.remove("hidden");
+
+            let hasAny = false;
+
+            for (let char of input) {
+                if (/[A-Z0-9]/.test(char)) {
+                    hasAny = true;
+                    const div = document.createElement("div");
+                    div.className = "sign-letter";
+                    div.innerHTML = `
+                        <img src="/static/images/isl_alphabet/${char}.jpg" 
+                             alt="${char}" 
+                             onerror="this.onerror=null; this.src='/static/images/isl_alphabet/${char}.png';">
+                        <div class="letter-label">${char}</div>
+                    `;
+                    container.appendChild(div);
+                }
+            }
+
+            if (!hasAny) {
+                container.innerHTML = `<p class="text-red-500 text-center text-xl">Please type letters A-Z or numbers 0-9 only.</p>`;
+            }
+        }
+
+        function speakInput() {
+            const text = document.getElementById("text-input").value.trim();
+            if (!text) {
+                alert("Please type something first!");
+                return;
+            }
+            speak(text);
+        }
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.95;
+                speechSynthesis.speak(utterance);
+            } else {
+                alert("Speech not supported in this browser.");
+            }
+        }
+    </script>
+</body>
+</html>

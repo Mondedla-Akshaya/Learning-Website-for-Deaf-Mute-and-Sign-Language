@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Learning Sign</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
+        
+        .logo-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .animated-girl {
+            animation: gentleWave 4s infinite ease-in-out;
+            font-size: 260px;
+            line-height: 1;
+        }
+
+        @keyframes gentleWave {
+            0%, 100% { transform: rotate(-15deg) translateY(0); }
+            50% { transform: rotate(20deg) translateY(-20px); }
+        }
+
+        .speech-bubble {
+            animation: bubblePop 2s ease forwards;
+        }
+
+        @keyframes bubblePop {
+            0% { opacity: 0; transform: scale(0.6) translateY(30px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <!-- Navbar -->
+    <nav class="bg-indigo-600 text-white p-6 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <span class="text-4xl">👐</span>
+            <h1 class="logo-font text-3xl font-bold">Learning Website for Deaf,Mute and Sign Language</h1>
+        </div>
+        <div class="flex items-center gap-6">
+            <span class="text-xl">Hi, {{ username }} 👋</span>
+            <a href="/logout" class="bg-white/20 hover:bg-white/30 px-6 py-3 rounded-3xl">Logout</a>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-16">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+            <!-- Left Side: Animated Girl Greeting -->
+            <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
+                <div class="relative">
+                    <!-- Animated Girl -->
+                    <div class="animated-girl">🙋‍♀️</div>
+                    
+                    <!-- Speech Bubble -->
+                    <div class="speech-bubble absolute -top-28 left-1/2 -translate-x-1/2 bg-white text-indigo-700 px-10 py-6 rounded-3xl shadow-2xl text-3xl font-medium flex items-center gap-4">
+                        Namaste! 
+                        <span class="text-5xl">🙏</span>
+                    </div>
+                </div>
+
+                <h1 class="text-6xl font-bold logo-font mt-10">Welcome, {{ username }}!</h1>
+                <p class="text-2xl text-slate-600 mt-4">Continue your Indian Sign Language journey today</p>
+            </div>
+
+            <!-- Right Side: Learning Options -->
+            <div>
+                <h2 class="text-4xl font-semibold mb-10 text-center lg:text-left">Choose Your Learning Path</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Alphabet -->
+                    <a href="/alphabet" class="bg-white rounded-3xl p-10 hover:shadow-2xl transition group">
+                        <div class="text-7xl mb-6 group-hover:scale-110 transition">🔤</div>
+                        <h3 class="text-3xl font-semibold mb-2">Alphabets A–Z</h3>
+                        <p class="text-slate-600">Master every letter with clear signs</p>
+                    </a>
+
+                    <!-- Numbers -->
+                    <a href="/numbers" class="bg-white rounded-3xl p-10 hover:shadow-2xl transition group">
+                        <div class="text-7xl mb-6 group-hover:scale-110 transition">🔢</div>
+                        <h3 class="text-3xl font-semibold mb-2">Numbers 0–9</h3>
+                        <p class="text-slate-600">Learn counting in ISL</p>
+                    </a>
+
+                    <!-- Tutorials -->
+                    <a href="/tutorials" class="bg-white rounded-3xl p-10 hover:shadow-2xl transition group">
+                        <div class="text-7xl mb-6 group-hover:scale-110 transition">📹</div>
+                        <h3 class="text-3xl font-semibold mb-2">Video Tutorials</h3>
+                        <p class="text-slate-600">Step-by-step ISL lessons</p>
+                    </a>
+
+                    <!-- Quiz -->
+                    <a href="/quiz" class="bg-white rounded-3xl p-10 hover:shadow-2xl transition group">
+                        <div class="text-7xl mb-6 group-hover:scale-110 transition">❓</div>
+                        <h3 class="text-3xl font-semibold mb-2">Quiz & Progress</h3>
+                        <p class="text-slate-600">Test yourself and track improvement</p>
+                    </a>
+                </div>
+
+                <!-- Live Translator Card -->
+                <a href="/translator" 
+                   class="block mt-8 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-3xl p-12 hover:shadow-2xl transition">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-6xl mb-4">🖐️</div>
+                            <h3 class="text-4xl font-semibold">Live Translator</h3>
+                            <p class="mt-3 text-lg opacity-90">Text to Sign + Speech</p>
+                        </div>
+                        <div class="text-8xl">✍️</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-900 text-white py-12 text-center">
+        <p class="text-2xl mb-2 logo-font">Learning Sign Language</p>
+        <p class="text-slate-400">Made with ❤️ for the Deaf & Mute Community in Hyderabad</p>
+    </footer>
+
+</body>
+</html>

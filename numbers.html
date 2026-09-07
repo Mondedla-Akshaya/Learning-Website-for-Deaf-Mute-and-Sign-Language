@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISL Numbers - Learning Sign</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .sign-card {
+            transition: all 0.3s ease;
+        }
+        .sign-card:hover {
+            transform: scale(1.08);
+            box-shadow: 0 20px 25px -5px rgb(79 70 229 / 0.2);
+        }
+        .number {
+            font-size: 6rem;
+            font-weight: 900;
+            color: #4f46e5;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <nav class="bg-indigo-600 text-white p-6 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <span class="text-4xl">👐</span>
+            <h1 class="text-3xl font-bold">Learning Website for Deaf,Mute and Sign Language</h1>
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="/home" class="hover:underline flex items-center gap-2">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            <a href="/logout" class="bg-white/20 hover:bg-white/30 px-6 py-3 rounded-3xl">Logout</a>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-6xl font-bold mb-4">Indian Sign Language Numbers (0–9)</h1>
+            <p class="text-2xl text-slate-600">Click on any number to see the clear ISL sign</p>
+        </div>
+
+        <div id="numbers-grid" class="grid grid-cols-5 md:grid-cols-10 gap-8">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="sign-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="modal-number" class="text-7xl font-black text-indigo-600"></h2>
+                <button onclick="closeModal()" class="text-4xl text-slate-400 hover:text-slate-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <img id="modal-image" src="" alt="ISL Number Sign" class="w-full rounded-2xl shadow-xl">
+            <p class="text-center mt-8 text-slate-600 text-lg">
+                Practice this sign daily in front of a mirror!
+            </p>
+            <button onclick="closeModal()" 
+                    class="mt-8 w-full bg-indigo-600 text-white py-5 rounded-3xl text-xl font-semibold">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const numbers = ["0","1","2","3","4","5","6","7","8","9"];
+        const grid = document.getElementById("numbers-grid");
+
+        numbers.forEach(num => {
+            const card = document.createElement("div");
+            card.className = "sign-card bg-white rounded-3xl overflow-hidden cursor-pointer border border-slate-100 shadow hover:border-indigo-300";
+            
+            card.innerHTML = `
+                <div class="h-64 bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center">
+                    <div class="number">${num}</div>
+                </div>
+                <div class="p-6 text-center">
+                    <p class="font-semibold text-xl text-slate-700">Number ${num}</p>
+                    <p class="text-sm text-indigo-600 mt-2 flex items-center justify-center gap-2">
+                        <i class="fas fa-hand-point-up"></i> View ISL Sign
+                    </p>
+                </div>
+            `;
+
+            card.addEventListener("click", () => {
+                showModal(num);
+            });
+
+            grid.appendChild(card);
+        });
+
+        function showModal(num) {
+            document.getElementById("modal-number").textContent = num;
+            document.getElementById("modal-image").src = `/static/images/isl_alphabet/${num}.jpg`;
+            const modal = document.getElementById("sign-modal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("sign-modal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+
+        // Close modal when clicking outside
+        document.getElementById("sign-modal").addEventListener("click", function(e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+</body>
+</html>

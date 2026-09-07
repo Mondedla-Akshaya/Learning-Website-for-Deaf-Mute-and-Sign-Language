@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISL Quiz & Progress - Learning Sign</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .quiz-card { transition: all 0.3s ease; }
+        .quiz-card:hover { transform: translateY(-5px); }
+        .correct { color: #22c55e; }
+        .incorrect { color: #ef4444; }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <nav class="bg-indigo-600 text-white p-6 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <span class="text-4xl">👐</span>
+            <h1 class="text-3xl font-bold">Learning Sign</h1>
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="/home" class="hover:underline">← Back to Home</a>
+            <a href="/logout" class="bg-white/20 px-6 py-3 rounded-3xl">Logout</a>
+        </div>
+    </nav>
+
+    <div class="max-w-5xl mx-auto px-6 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-6xl font-bold mb-4">ISL Quiz & Games</h1>
+            <p class="text-2xl text-slate-600">Test your knowledge • Track your progress</p>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="bg-white rounded-3xl p-8 mb-12 shadow">
+            <h2 class="text-3xl font-semibold mb-6 flex items-center gap-3">
+                <i class="fas fa-chart-line text-indigo-600"></i> Your Learning Progress
+            </h2>
+            <div class="grid grid-cols-3 gap-6 text-center">
+                <div>
+                    <div id="total-score" class="text-6xl font-bold text-indigo-600">0</div>
+                    <p class="text-slate-600">Overall Score</p>
+                </div>
+                <div>
+                    <div id="quizzes-taken" class="text-6xl font-bold text-indigo-600">0</div>
+                    <p class="text-slate-600">Quizzes Taken</p>
+                </div>
+                <div>
+                    <div id="best-score" class="text-6xl font-bold text-green-600">0%</div>
+                    <p class="text-slate-600">Best Score</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div onclick="startQuiz(0)" class="quiz-card bg-white rounded-3xl p-8 cursor-pointer border border-slate-100 hover:border-indigo-400">
+                <div class="text-6xl mb-6">🔤</div>
+                <h3 class="text-3xl font-semibold mb-3">Alphabet Quiz</h3>
+                <p class="text-slate-600">10 Questions</p>
+            </div>
+
+            <div onclick="startQuiz(1)" class="quiz-card bg-white rounded-3xl p-8 cursor-pointer border border-slate-100 hover:border-indigo-400">
+                <div class="text-6xl mb-6">🔢</div>
+                <h3 class="text-3xl font-semibold mb-3">Numbers Quiz</h3>
+                <p class="text-slate-600">10 Questions</p>
+            </div>
+
+            <div onclick="startQuiz(2)" class="quiz-card bg-white rounded-3xl p-8 cursor-pointer border border-slate-100 hover:border-indigo-400">
+                <div class="text-6xl mb-6">🗣️</div>
+                <h3 class="text-3xl font-semibold mb-3">Basic Phrases Quiz</h3>
+                <p class="text-slate-600">10 Questions</p>
+            </div>
+        </div>
+
+        <!-- Quiz Area -->
+        <div id="quiz-container" class="hidden mt-12 bg-white rounded-3xl shadow-xl p-10"></div>
+
+        <!-- Detailed Report with Pie Chart -->
+        <div id="quiz-result" class="hidden mt-12 bg-white rounded-3xl shadow-xl p-10">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold mb-2" id="quiz-title"></h2>
+                <p class="text-6xl font-semibold text-indigo-600" id="score-percentage"></p>
+                <p class="text-xl text-slate-600" id="score-text"></p>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="flex justify-center mb-12">
+                <div class="w-80 h-80">
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Detailed Answers -->
+            <h3 class="text-2xl font-semibold mb-6">Detailed Report</h3>
+            <div id="detailed-answers" class="space-y-6"></div>
+
+            <div class="flex justify-center gap-6 mt-12">
+                <button onclick="restartQuiz()" 
+                        class="px-10 py-5 bg-indigo-600 text-white rounded-3xl text-xl font-semibold">
+                    Retake Quiz
+                </button>
+                <button onclick="goToHome()" 
+                        class="px-10 py-5 bg-slate-200 text-slate-700 rounded-3xl text-xl font-semibold">
+                    Back to Home
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuiz = 0;
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+        let quizzesTaken = 0;
+        let totalScore = 0;
+        let bestScore = 0;
+        let chartInstance = null;
+
+        const quizzes = [
+            {
+                title: "Alphabet Quiz",
+                questions: [
+                    { q: "What is the sign for letter A in ISL?", options: ["Closed fist with thumb on side", "Open palm", "Index finger pointing up", "Thumb up"], correct: 0 },
+                    { q: "Which letter is signed with index finger pointing up?", options: ["A", "B", "I", "L"], correct: 2 },
+                    { q: "How do you sign letter 'O'?", options: ["Circle with thumb and index finger", "Open hand", "Fist", "Two fingers apart"], correct: 0 },
+                    { q: "Letter 'V' is shown using?", options: ["Two fingers apart like victory sign", "All fingers open", "Thumb only", "Closed fist"], correct: 0 },
+                    { q: "Which letter uses all fingers spread out?", options: ["B", "C", "W", "5"], correct: 0 },
+                    { q: "Letter 'L' is signed with?", options: ["Thumb and index finger in L shape", "Fist", "Open palm", "Three fingers"], correct: 0 },
+                    { q: "What does letter 'B' look like?", options: ["All fingers together", "Index finger only", "Circle shape", "Two fingers"], correct: 0 }
+                ]
+            },
+            {
+                title: "Numbers Quiz",
+                questions: [
+                    { q: "How do you show number 5 in ISL?", options: ["All five fingers open", "Only thumb", "Two fingers", "Index finger only"], correct: 0 },
+                    { q: "Number 0 is shown by?", options: ["Closed fist", "Circle with thumb and fingers", "Open hand", "Pointing down"], correct: 1 },
+                    { q: "Which number uses thumb and index finger touching?", options: ["1", "8", "9", "0"], correct: 2 },
+                    { q: "How many fingers for number 3?", options: ["Three fingers up", "All fingers", "Two fingers", "Fist"], correct: 0 },
+                    { q: "Number 10 is usually shown as?", options: ["Two fists", "Open palm", "Fist with thumb up", "Index finger"], correct: 0 }
+                ]
+            },
+            {
+                title: "Basic Phrases Quiz",
+                questions: [
+                    { q: "How do you sign 'Hello / Namaste'?", options: ["Join both palms together", "Wave hand", "Point to chest", "Fist on chest"], correct: 0 },
+                    { q: "What is the sign for 'Thank You'?", options: ["Touch chin and move forward", "Clap hands", "Cross arms", "Point up"], correct: 0 },
+                    { q: "How do you sign 'Sorry'?", options: ["Circular motion on chest with fist", "Shake head", "Rubbing hands", "Point down"], correct: 0 },
+                    { q: "Which sign means 'Yes'?", options: ["Nodding with fist", "Open palm", "Thumbs up", "Pointing forward"], correct: 0 }
+                ]
+            }
+        ];
+
+        function startQuiz(quizIndex) {
+            currentQuiz = quizIndex;
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            document.getElementById("quiz-container").classList.remove("hidden");
+            document.getElementById("quiz-result").classList.add("hidden");
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const qData = quizzes[currentQuiz].questions[currentQuestion];
+            let html = `
+                <h2 class="text-3xl font-semibold mb-8">${quizzes[currentQuiz].title} (${currentQuestion + 1}/${quizzes[currentQuiz].questions.length})</h2>
+                <div class="text-2xl font-medium mb-10">${qData.q}</div>
+                <div class="space-y-4">
+            `;
+
+            qData.options.forEach((option, index) => {
+                html += `
+                    <button onclick="answerQuestion(${index})" 
+                            class="w-full text-left px-8 py-6 text-xl border-2 border-slate-200 hover:border-indigo-500 rounded-3xl transition">
+                        ${option}
+                    </button>
+                `;
+            });
+            html += `</div>`;
+            document.getElementById("quiz-container").innerHTML = html;
+        }
+
+        window.answerQuestion = function(selected) {
+            const qData = quizzes[currentQuiz].questions[currentQuestion];
+            userAnswers.push({
+                question: qData.q,
+                selected: qData.options[selected],
+                correct: qData.options[qData.correct],
+                isCorrect: selected === qData.correct
+            });
+
+            if (selected === qData.correct) score++;
+
+            currentQuestion++;
+
+            if (currentQuestion < quizzes[currentQuiz].questions.length) {
+                renderQuestion();
+            } else {
+                showReportWithChart();
+            }
+        };
+
+        function showReportWithChart() {
+            const totalQuestions = quizzes[currentQuiz].questions.length;
+            const percentage = Math.round((score / totalQuestions) * 100);
+            const incorrect = totalQuestions - score;
+
+            // Update global progress
+            quizzesTaken++;
+            totalScore = Math.round((totalScore + percentage) / quizzesTaken);
+            if (percentage > bestScore) bestScore = percentage;
+
+            document.getElementById("total-score").textContent = totalScore;
+            document.getElementById("quizzes-taken").textContent = quizzesTaken;
+            document.getElementById("best-score").textContent = bestScore + "%";
+
+            // Fill Report
+            document.getElementById("quiz-title").textContent = quizzes[currentQuiz].title;
+            document.getElementById("score-percentage").textContent = percentage + "%";
+            document.getElementById("score-text").textContent = `${score} correct out of ${totalQuestions}`;
+
+            // Create Pie Chart
+            const ctx = document.getElementById("progressChart");
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Correct', 'Incorrect'],
+                    datasets: [{
+                        data: [score, incorrect],
+                        backgroundColor: ['#22c55e', '#ef4444'],
+                        borderColor: ['#ffffff', '#ffffff'],
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 16 } } },
+                        tooltip: { callbacks: { label: (ctx) => ctx.raw + " answers" } }
+                    }
+                }
+            });
+
+            // Detailed Answers
+            let answersHTML = "";
+            userAnswers.forEach((ans, i) => {
+                answersHTML += `
+                    <div class="border-l-4 ${ans.isCorrect ? 'border-green-500' : 'border-red-500'} pl-6 py-4 bg-slate-50 rounded-r-2xl">
+                        <p class="font-medium">${i+1}. ${ans.question}</p>
+                        <p class="mt-2">
+                            Your Answer: <span class="${ans.isCorrect ? 'correct' : 'incorrect'}">${ans.selected}</span>
+                        </p>
+                        ${!ans.isCorrect ? `<p>Correct Answer: <span class="correct">${ans.correct}</span></p>` : ''}
+                    </div>
+                `;
+            });
+            document.getElementById("detailed-answers").innerHTML = answersHTML;
+
+            // Show result
+            document.getElementById("quiz-container").classList.add("hidden");
+            document.getElementById("quiz-result").classList.remove("hidden");
+        }
+
+        function restartQuiz() {
+            document.getElementById("quiz-result").classList.add("hidden");
+            startQuiz(currentQuiz);
+        }
+
+        function goToHome() {
+            window.location.href = "/home";
+        }
+    </script>
+</body>
+</html>

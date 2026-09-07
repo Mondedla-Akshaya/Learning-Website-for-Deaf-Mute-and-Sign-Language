@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISL Alphabet - Learning Sign</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .sign-card {
+            transition: all 0.3s ease;
+        }
+        .sign-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 25px -5px rgb(79 70 229 / 0.15);
+        }
+        .letter {
+            font-size: 5.5rem;
+            font-weight: 900;
+            color: #4f46e5;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <nav class="bg-indigo-600 text-white p-6 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <span class="text-4xl">👐</span>
+            <h1 class="text-3xl font-bold">Learning Website for Deaf,Mute and Sign Language</h1>
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="/home" class="hover:underline flex items-center gap-2">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            <a href="/logout" class="bg-white/20 hover:bg-white/30 px-6 py-3 rounded-3xl">Logout</a>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-6xl font-bold mb-4">Indian Sign Language Alphabet (A–Z)</h1>
+            <p class="text-2xl text-slate-600">Click on any letter to watch its dedicated ISL sign video</p>
+        </div>
+
+        <div id="alphabet-grid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-13 gap-8">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Video links for each letter (different video or timestamp for every letter)
+        const videoMap = {
+            'A': 'https://youtu.be/u_ZTEXA_WX4?si=EyiJawibWFb9kKTl',   // A at ~2:14
+            'B': 'https://youtu.be/ieWVWx9ykb8?si=eJR_2vY764WgPw-1',   // B
+            'C': 'https://youtu.be/zmZ8E1O34pQ?si=MDwQCnnFhqFsdcF8',   // C
+            'D': 'https://youtu.be/cMzyA5kiFI4?si=zSWVzczcLdK-XsAV',   // D
+            'E': 'https://youtu.be/cMzyA5kiFI4?si=UsaRtwVWX_6wCxD0',   // E
+            'F': 'https://youtu.be/Ez8rwyZvclA?si=Fpt-w9M_pXhcpbHW',   // F
+            'G': 'https://youtu.be/Ez8rwyZvclA?si=gY3phWaumBFk5W2q',   // G
+            'H': 'https://youtu.be/T2DVNMM5hmc?si=-rL2xayrcEa7bYmJ',   // H
+            'I': 'https://youtu.be/cGZRNgzl7Ks?si=VB1DyKpV43P_Ecx-',   // I
+            'J': 'https://youtu.be/CKoTMog47Eo?si=POIG_isoNidokB5Y',   // J
+            'K': 'https://youtu.be/0QphTAjEJaI?si=vLQNXXybcTA9pfMq',            // Full A-Z good quality
+            'L': 'https://youtu.be/uh4T_jmc4Sw?si=peytUM2bCReDVj-C',
+            'M': 'https://youtu.be/c3vj8iQpabg?si=QhbsrSy_IROQzZof',
+            'N': 'https://youtu.be/thLt0HRBzKI?si=a7QpwWlKboMRTgA3',
+            'O': 'https://youtu.be/YuHPc6obYlQ?si=XKezTjQvPXc37_rW',
+            'P': 'https://youtu.be/XOIHxWPt_UE?si=7xStUQYmmxGK-5aS',
+            'Q': 'https://youtu.be/7wMVH7iJUNI?si=E3e8qQgC-OjEe59q',
+            'R': 'https://youtu.be/0Lk7_fKVCdk?si=UiyXXEycbFUvyghJ',
+            'S': 'https://youtu.be/PDbfw8isOos',
+            'T': 'https://youtu.be/WrjfUvmWzko?si=yzqcJv_tcLmAPvnH',
+            'U': 'https://youtu.be/ltzSNNa13W8?si=eFunjrXLaTd5BWa6',
+            'V': 'https://youtu.be/XaHVxkbbO40?si=WB4xLX-9-oD5ZVHe',
+            'W': 'https://youtube.com/shorts/-bx6b-tEogk?si=2seubqvFnh6Fzv9P',
+            'X': 'https://youtu.be/up4jGU_rt8c?si=tGsWgNhdRcN9tk71',
+            'Y': 'https://youtu.be/qcdivQfA41Y?si=U7-k02FmT1U82UNG',
+            'Z': 'https://www.youtube.com/embed/z2AxVEh0oBE'
+        };
+
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        const grid = document.getElementById("alphabet-grid");
+
+        letters.forEach(letter => {
+            const card = document.createElement("div");
+            card.className = "sign-card bg-white rounded-3xl overflow-hidden cursor-pointer border border-slate-100 shadow hover:border-indigo-300";
+            
+            card.innerHTML = `
+                <div class="h-60 bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center">
+                    <div class="letter">${letter}</div>
+                </div>
+                <div class="p-6 text-center">
+                    <p class="font-semibold text-lg text-slate-700">Letter ${letter}</p>
+                    <p class="text-sm text-indigo-600 mt-1 flex items-center justify-center gap-2">
+                        <i class="fas fa-play-circle"></i> Watch ISL Sign
+                    </p>
+                </div>
+            `;
+
+            card.addEventListener("click", () => {
+                const videoUrl = videoMap[letter] || "https://www.youtube.com/embed/z2AxVEh0oBE";
+                window.open(videoUrl, "_blank");
+            });
+
+            grid.appendChild(card);
+        });
+    </script>
+</body>
+</html>
